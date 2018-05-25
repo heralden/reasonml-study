@@ -1,11 +1,15 @@
-[%bs.raw {|require('./index.css')|}];
-
-/* [@bs.module "./registerServiceWorker"] */
-/* external register_service_worker : unit => unit = "default"; */
+Css.(
+  global(
+    "body",
+    [
+      margin(px(0)),
+      padding(px(0)),
+      fontFamily("sans-serif"),
+    ],
+  )
+);
 
 ReactDOMRe.renderToElementWithId(
   <App message="Welcome to React and Reason" />,
   "root",
 );
-
-/* register_service_worker(); */
