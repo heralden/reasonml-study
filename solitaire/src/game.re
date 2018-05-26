@@ -7,7 +7,7 @@ type card = (suite, rank);
 Random.self_init();
 
 let shuffleDeck = (deck: list(card)): list(card) => {
-  let randomSort = (c1: card, c2: card) => Random.int(2);
+  let randomSort = (_c1: card, _c2: card) => Random.int(2);
 
   ListLabels.fast_sort(~cmp=randomSort, deck);
 };
@@ -15,7 +15,7 @@ let shuffleDeck = (deck: list(card)): list(card) => {
 let createDeck = (): list(card) => {
 
   let consCard = (suite: suite, deck: list(card), rank: rank) =>
-    ListLabels.cons((suite, rank), deck);
+    [ (suite, rank), ...deck ];
 
   let reduceSuits = (deck: list(card), suite: suite) =>
     ListLabels.fold_left(~f=consCard(suite), ~init=deck, ranks);
@@ -30,7 +30,7 @@ let pickCard = (deck: list(card)): (card, list(card)) =>
 let rec pickHand = (~amount: int=1, ~hand: list(card)=[], deck: list(card)) => {
   if (amount > 0) {
     let (pick, deck) = pickCard(deck);
-    let hand = ListLabels.cons(pick, hand);
+    let hand = [ pick, ...hand ];
     pickHand(~amount=amount - 1, ~hand, deck);
   } else {
     (hand, deck);
