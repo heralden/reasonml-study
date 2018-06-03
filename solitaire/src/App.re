@@ -15,18 +15,17 @@ module Styles = {
     ]);
   };
   let app = style([textAlign(center)]);
-  let header = style([
-                     background(hex("222")),
-                     height(px(150)),
-                     padding(px(20)),
-                     color(white),
-  ]);
-  let intro = style([
-                    unsafe("fontSize", "large"),
-  ]);
+  let header =
+    style([
+      background(hex("222")),
+      height(px(150)),
+      padding(px(20)),
+      color(white),
+    ]);
+  let intro = style([unsafe("fontSize", "large")]);
 };
 
-[@bs.module] external logo : string = "./logo.svg";
+[@bs.module] external logo: string = "./logo.svg";
 
 let component = ReasonReact.statelessComponent("App");
 
