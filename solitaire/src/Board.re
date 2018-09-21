@@ -68,6 +68,20 @@ let createBoard = () => {
   };
 };
 
+let drawState = ({stock, piles, hand, foundation}: state) => {
+  /* We currently only handle a single element in `hand` */
+  let (newHand, newStock) =
+    switch (hand, stock) {
+    | ([], [card, ...remStock]) => ([card], remStock)
+    | ([onHand], [card, ...remStock]) => (
+        [card],
+        List.concat([remStock, [onHand]]),
+      )
+    | (hand, []) => (hand, [])
+    };
+  {stock: newStock, piles, hand: newHand, foundation};
+};
+
 let component = ReasonReact.reducerComponent("Board");
 
 let topCard = (cards: list(Game.card)) =>
@@ -76,12 +90,27 @@ let topCard = (cards: list(Game.card)) =>
   | [] => <div />
   };
 
+let countCards = (cards: list(Game.card)) => {
+  let len = List.length(cards);
+  switch (len) {
+  | 1 => "1 card"
+  | 0 => "Empty"
+  | x => string_of_int(x) ++ " cards"
+  };
+};
+
+let showCards = (cards: list(Game.card)) =>
+  <>
+    <p> {ReasonReact.string(countCards(cards))} </p>
+    <p> {topCard(cards)} </p>
+  </>;
+
 let make = _children => {
   ...component,
   initialState: createBoard,
-  reducer: (action, state: state) =>
+  reducer: (action: action, state: state) =>
     switch (action) {
-    | Draw => ReasonReact.Update(state)
+    | Draw => ReasonReact.Update(drawState(state))
     | Move => ReasonReact.Update(state)
     | Save => ReasonReact.Update(state)
     },
@@ -90,60 +119,39 @@ let make = _children => {
       <div className=Styles.board>
         <div className=Styles.stock>
           <div className=Styles.pile>
-            {ReasonReact.string("Deck")}
-            {topCard(self.state.stock)}
+            <p> {ReasonReact.string("Deck (hidden)")} </p>
+            {showCards(self.state.stock)}
           </div>
-          <div className=Styles.pile>
-            {ReasonReact.string("Hand")}
-            {topCard(self.state.hand)}
+          <div className=Styles.pile onClick={_data => self.send(Draw)}>
+            <p> {ReasonReact.string("Hand")} </p>
+            {showCards(self.state.hand)}
           </div>
         </div>
         <div className=Styles.pile>
-          {ReasonReact.string("Diamonds")}
-          {topCard(self.state.foundation.diamonds)}
+          <p> {ReasonReact.string("Diamonds")} </p>
+          {showCards(self.state.foundation.diamonds)}
         </div>
         <div className=Styles.pile>
-          {ReasonReact.string("Clubs")}
-          {topCard(self.state.foundation.clubs)}
+          <p> {ReasonReact.string("Clubs")} </p>
+          {showCards(self.state.foundation.clubs)}
         </div>
         <div className=Styles.pile>
-          {ReasonReact.string("Hearts")}
-          {topCard(self.state.foundation.hearts)}
+          <p> {ReasonReact.string("Hearts")} </p>
+          {showCards(self.state.foundation.hearts)}
         </div>
         <div className=Styles.pile>
-          {ReasonReact.string("Spades")}
-          {topCard(self.state.foundation.spades)}
+          <p> {ReasonReact.string("Spades")} </p>
+          {showCards(self.state.foundation.spades)}
         </div>
       </div>
       <div className=Styles.board>
-        <div className=Styles.pile>
-          {ReasonReact.string("1")}
-          {topCard(self.state.piles[0])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("2")}
-          {topCard(self.state.piles[1])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("3")}
-          {topCard(self.state.piles[2])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("4")}
-          {topCard(self.state.piles[3])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("5")}
-          {topCard(self.state.piles[4])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("6")}
-          {topCard(self.state.piles[5])}
-        </div>
-        <div className=Styles.pile>
-          {ReasonReact.string("7")}
-          {topCard(self.state.piles[6])}
-        </div>
+        <div className=Styles.pile> {showCards(self.state.piles[0])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[1])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[2])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[3])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[4])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[5])} </div>
+        <div className=Styles.pile> {showCards(self.state.piles[6])} </div>
       </div>
     </div>,
 };

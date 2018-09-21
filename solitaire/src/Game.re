@@ -54,7 +54,7 @@ let pickCard = (deck: list(card)): (card, list(card)) => (
 );
 
 let rec pickHand = (~amount: int=1, ~hand: list(card)=[], deck: list(card)) =>
-  if (amount > 0) {
+  if (amount > 0 && List.length(deck) > 0) {
     let (pick, deck) = pickCard(deck);
     let hand = [pick, ...hand];
     pickHand(~amount=amount - 1, ~hand, deck);

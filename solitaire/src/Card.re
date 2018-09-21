@@ -1,4 +1,4 @@
-open Game
+open Game;
 
 let suiteToString = (suite: suite) =>
   switch (suite) {
@@ -19,12 +19,12 @@ let rankToString = (rank: rank) =>
 
 let cardToString = (card: card) => {
   let (suite, rank) = card;
-  suiteToString(suite) ++ " " ++ rankToString(rank)
+  rankToString(rank) ++ " of " ++ suiteToString(suite);
 };
 
 let component = ReasonReact.statelessComponent("App");
 
 let make = (~card: card, _children) => {
   ...component,
-  render: _self => <div> <p> (ReasonReact.string(cardToString(card))) </p> </div>,
+  render: _self => <p> {ReasonReact.string(cardToString(card))} </p>,
 };
