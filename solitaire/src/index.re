@@ -6,6 +6,6 @@ Css.(
 );
 
 ReactDOMRe.renderToElementWithId(
-  <App message="Welcome to React and Reason" />,
+  <App message="Welcome to React and Reason"/>,
   "root",
 );

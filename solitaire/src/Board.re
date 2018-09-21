@@ -31,7 +31,7 @@ type state = {
   stock: list(Game.card),
   hand: list(Game.card),
   foundation,
-  piles: list(pile),
+  piles: array(pile),
 };
 
 /* Draw: a hand */
@@ -44,15 +44,15 @@ type action =
 
 let createBoard = () => {
   let (stock, piles) =
-    ListLabels.fold_left(
+    ArrayLabels.fold_left(
       ~f=
         (acc, amount) => {
           let (deck, piles) = acc;
           let (hand, deck) = Game.pickHand(~amount, deck);
-          (deck, ListLabels.append(piles, [hand]));
+          (deck, ArrayLabels.append(piles, [|hand|]));
         },
-      ~init=(Game.createDeck(), []),
-      [1, 2, 3, 4, 5, 6, 7],
+      ~init=(Game.createDeck(), [||]),
+      [|1, 2, 3, 4, 5, 6, 7|],
     );
 
   {
@@ -70,6 +70,12 @@ let createBoard = () => {
 
 let component = ReasonReact.reducerComponent("Board");
 
+let topCard = (cards: list(Game.card)) =>
+  switch (cards) {
+  | [card, ..._] => <Card card />
+  | [] => <div />
+  };
+
 let make = _children => {
   ...component,
   initialState: createBoard,
@@ -79,26 +85,65 @@ let make = _children => {
     | Move => ReasonReact.Update(state)
     | Save => ReasonReact.Update(state)
     },
-  render: _self =>
+  render: self =>
     <div>
       <div className=Styles.board>
         <div className=Styles.stock>
-          <div className=Styles.pile> (ReasonReact.string("Deck")) </div>
-          <div className=Styles.pile> (ReasonReact.string("Hand")) </div>
+          <div className=Styles.pile>
+            {ReasonReact.string("Deck")}
+            {topCard(self.state.stock)}
+          </div>
+          <div className=Styles.pile>
+            {ReasonReact.string("Hand")}
+            {topCard(self.state.hand)}
+          </div>
         </div>
-        <div className=Styles.pile> (ReasonReact.string("Diamonds")) </div>
-        <div className=Styles.pile> (ReasonReact.string("Clubs")) </div>
-        <div className=Styles.pile> (ReasonReact.string("Hearts")) </div>
-        <div className=Styles.pile> (ReasonReact.string("Spades")) </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("Diamonds")}
+          {topCard(self.state.foundation.diamonds)}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("Clubs")}
+          {topCard(self.state.foundation.clubs)}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("Hearts")}
+          {topCard(self.state.foundation.hearts)}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("Spades")}
+          {topCard(self.state.foundation.spades)}
+        </div>
       </div>
       <div className=Styles.board>
-        <div className=Styles.pile> (ReasonReact.string("1")) </div>
-        <div className=Styles.pile> (ReasonReact.string("2")) </div>
-        <div className=Styles.pile> (ReasonReact.string("3")) </div>
-        <div className=Styles.pile> (ReasonReact.string("4")) </div>
-        <div className=Styles.pile> (ReasonReact.string("5")) </div>
-        <div className=Styles.pile> (ReasonReact.string("6")) </div>
-        <div className=Styles.pile> (ReasonReact.string("7")) </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("1")}
+          {topCard(self.state.piles[0])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("2")}
+          {topCard(self.state.piles[1])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("3")}
+          {topCard(self.state.piles[2])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("4")}
+          {topCard(self.state.piles[3])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("5")}
+          {topCard(self.state.piles[4])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("6")}
+          {topCard(self.state.piles[5])}
+        </div>
+        <div className=Styles.pile>
+          {ReasonReact.string("7")}
+          {topCard(self.state.piles[6])}
+        </div>
       </div>
     </div>,
 };

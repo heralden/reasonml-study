@@ -34,7 +34,7 @@ let make = (~message, _children) => {
     <div className=Styles.app>
       <div className=Styles.header>
         <img src=logo className=Styles.logo alt="logo" />
-        <h2> (ReasonReact.string(message)) </h2>
+        <h2> {ReasonReact.string(message)} </h2>
       </div>
       <Board />
     </div>,
